@@ -258,4 +258,5 @@ replace (
 	// Our tendermint branch is: https://github.com/forbole/tendermint v0.34.x-juno
 	// TODO: Remove this once https://github.com/tendermint/tendermint/pull/9416 is merged
 	github.com/tendermint/tendermint => github.com/forbole/tendermint v0.34.13-0.20220912101327-a0517f88c2be
+	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )

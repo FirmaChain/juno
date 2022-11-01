@@ -2,17 +2,13 @@ package remote
 
 import (
 	"context"
-	"crypto/tls"
 	"regexp"
 	"strconv"
 
-	"google.golang.org/grpc/credentials/insecure"
-
-	"google.golang.org/grpc/credentials"
-
 	grpctypes "github.com/cosmos/cosmos-sdk/types/grpc"
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
+
+	"google.golang.org/grpc"
 )
 
 var (
@@ -39,15 +35,10 @@ func MustCreateGrpcConnection(cfg *GRPCConfig) *grpc.ClientConn {
 
 // CreateGrpcConnection creates a new gRPC client connection from the given configuration
 func CreateGrpcConnection(cfg *GRPCConfig) (*grpc.ClientConn, error) {
-	var grpcOpts []grpc.DialOption
-	if cfg.Insecure {
-		grpcOpts = append(grpcOpts, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	} else {
-		grpcOpts = append(grpcOpts, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{
-			MinVersion: tls.VersionTLS12,
-		})))
-	}
 
 	address := HTTPProtocols.ReplaceAllString(cfg.Address, "")
-	return grpc.Dial(address, grpcOpts...)
+	return grpc.Dial(
+		address,
+		grpc.WithInsecure(),
+	)
 }
