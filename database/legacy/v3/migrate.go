@@ -82,7 +82,7 @@ func (db *Migrator) createPartitionTable(table string, partitionID int64) error 
 		stmt := fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s PARTITION OF %s FOR VALUES IN (%v)`, partitionTable, table, partitionID)
 		_, err := db.Sql.Exec(stmt)
 
-		if err != nil {
+		if err == nil {
 			partitonCache[partitionTable] = true
 		}
 
