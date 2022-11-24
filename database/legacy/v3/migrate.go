@@ -71,12 +71,26 @@ func (db *Migrator) getOldTransactions(batchSize int64, offset int64) ([]types.T
 	return rows, nil
 }
 
+var partitonCache map[string]bool = make(map[string]bool)
+
 func (db *Migrator) createPartitionTable(table string, partitionID int64) error {
 	partitionTable := fmt.Sprintf("%s_%v", table, partitionID)
 
-	stmt := fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s PARTITION OF %s FOR VALUES IN (%v)`, partitionTable, table, partitionID)
-	_, err := db.Sql.Exec(stmt)
-	return err
+	_, exists := partitonCache[partitionTable]
+
+	if !exists {
+		stmt := fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s PARTITION OF %s FOR VALUES IN (%v)`, partitionTable, table, partitionID)
+		_, err := db.Sql.Exec(stmt)
+
+		if err != nil {
+			partitonCache[partitionTable] = true
+		}
+
+		return err
+	} else {
+		fmt.Println("SKIPPED!!!!!")
+		return nil
+	}
 }
 
 func (db *Migrator) migrateTransactions(rows []types.TransactionRow, partitionSize int64) error {
