@@ -47,7 +47,7 @@ func (db *Migrator) Migrate() error {
 		}
 
 		// Perform migration
-		log.Debug().Int64("start row", offset).Int64("end row", offset+batchSize).Msg("migrating transactions")
+		//log.Debug().Int64("start row", offset).Int64("end row", offset+batchSize).Msg("migrating transactions")
 		err = db.migrateTransactions(rows, partitionSize)
 		if err != nil {
 			return fmt.Errorf("error while inserting data: %s", err)
@@ -106,7 +106,7 @@ func (db *Migrator) migrateTransactions(rows []types.TransactionRow, partitionSi
 			return fmt.Errorf("error while creating transaction partition table: %s", err)
 		}
 
-		log.Debug().Int64("tx height", tx.Height).Msg("processing transactions")
+		//log.Debug().Int64("tx height", tx.Height).Msg("processing transactions")
 
 		// Append params
 		params = append(params, tx.Hash, tx.Height, tx.Success, tx.Messages, tx.Memo, tx.Signatures,
@@ -126,7 +126,7 @@ func (db *Migrator) migrateTransactions(rows []types.TransactionRow, partitionSi
 	}
 
 	for _, tx := range rows {
-		log.Debug().Int64("tx height", tx.Height).Msg("processing transaction messages")
+		//log.Debug().Int64("tx height", tx.Height).Msg("processing transaction messages")
 
 		// Insert the messages of this transaction
 		err = db.insertTransactionMessages(tx, partitionSize)
